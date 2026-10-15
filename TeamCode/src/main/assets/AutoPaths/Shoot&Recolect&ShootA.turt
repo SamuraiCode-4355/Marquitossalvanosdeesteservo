@@ -1,0 +1,155 @@
+{
+  "startPoint": {
+    "x": 60,
+    "y": 9.681415929203487,
+    "heading": "constant",
+    "degrees": 90,
+    "locked": false
+  },
+  "lines": [
+    {
+      "id": "mv8f203x-5asjm8",
+      "name": "",
+      "endPoint": {
+        "x": 18.90265486725664,
+        "y": 107.646017699115,
+        "heading": "linear",
+        "reverse": false,
+        "startDeg": 90,
+        "endDeg": 180
+      },
+      "controlPoints": [
+        {
+          "x": 19.407079646017696,
+          "y": 37.38053097345133
+        }
+      ],
+      "color": "#B568B8",
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": ""
+    },
+    {
+      "id": "line-sji3j90tg19",
+      "name": "",
+      "endPoint": {
+        "x": 61.11504424778761,
+        "y": 123.1725663716814,
+        "heading": "linear",
+        "startDeg": 180,
+        "endDeg": 0
+      },
+      "controlPoints": [
+        {
+          "x": 60,
+          "y": 113.52212389380531
+        }
+      ],
+      "color": "#B7DDA7",
+      "locked": false
+    },
+    {
+      "id": "line-jh5d886055",
+      "name": "",
+      "endPoint": {
+        "x": 61.11504424778761,
+        "y": 133.20353982300884,
+        "heading": "linear",
+        "startDeg": 0,
+        "endDeg": -90
+      },
+      "controlPoints": [],
+      "color": "#98857C",
+      "locked": false
+    }
+  ],
+  "shapes": [
+    {
+      "id": "biobuzz-hive-red",
+      "name": "HiveRedSide",
+      "vertices": [
+        {
+          "x": 46.5,
+          "y": 92
+        },
+        {
+          "x": 46.5,
+          "y": 52
+        },
+        {
+          "x": 49,
+          "y": 52
+        },
+        {
+          "x": 49,
+          "y": 92
+        }
+      ],
+      "color": "#3f3f3f",
+      "fillColor": "#fca5a5",
+      "type": "obstacle"
+    },
+    {
+      "id": "biobuzz-hive-blue",
+      "name": "HiveBlueSide",
+      "vertices": [
+        {
+          "x": 95,
+          "y": 92
+        },
+        {
+          "x": 95,
+          "y": 52
+        },
+        {
+          "x": 97.5,
+          "y": 52
+        },
+        {
+          "x": 97.5,
+          "y": 92
+        }
+      ],
+      "color": "#3f3f3f",
+      "fillColor": "#fca5a5",
+      "type": "obstacle"
+    }
+  ],
+  "sequence": [
+    {
+      "kind": "wait",
+      "id": "mv8f27jc-aridxl",
+      "name": "Shoot",
+      "durationMs": 4000,
+      "locked": false
+    },
+    {
+      "kind": "path",
+      "lineId": "mv8f203x-5asjm8"
+    },
+    {
+      "kind": "wait",
+      "id": "mv8fdaiu-qe79ks",
+      "name": "Intake",
+      "durationMs": 4000,
+      "locked": false
+    },
+    {
+      "kind": "path",
+      "lineId": "line-sji3j90tg19"
+    },
+    {
+      "kind": "path",
+      "lineId": "line-jh5d886055"
+    },
+    {
+      "kind": "wait",
+      "id": "mv8ffokm-9su646",
+      "name": "Shoot",
+      "durationMs": 4000,
+      "locked": false
+    }
+  ],
+  "extraData": {}
+}

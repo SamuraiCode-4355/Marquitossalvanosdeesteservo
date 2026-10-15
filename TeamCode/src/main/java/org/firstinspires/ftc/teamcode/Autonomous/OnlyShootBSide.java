@@ -19,16 +19,18 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
+import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PedroConstants;
 
-@Autonomous(name = "Turtle Tracer Basic", group = "Autonomous")
+@Autonomous(name = "Turtle Tracer Autonomous", group = "Autonomous")
 @Configurable // Panels
-public class SabraDios extends OpMode {
+public class OnlyShootBSide extends OpMode {
 
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pathing follower instance
@@ -45,7 +47,7 @@ public class SabraDios extends OpMode {
     panelsTelemetry.update(telemetry);
 
     follower = PedroConstants.create(hardwareMap);
-    follower.setPose(p.of(60.000, 10.000, 90.000));
+    follower.setPose(p.of(59.836, 134.127, -90.000));
 
     pathTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
@@ -67,40 +69,8 @@ public class SabraDios extends OpMode {
   public static class Paths {
 
     private static final PoseFactory p = PoseFactory.degrees();
-    public Path line1;
-    public Path line2;
-    public Path line3;
-    public Path line4;
-    public Path line5;
 
-    public Paths(Follower follower) {
-      line1 = line(p.of(60.000, 10.000, 0.0), p.of(46.500, 20.063, 0.0)).linear(
-        Math.toRadians(90),
-        Math.toRadians(90)
-      );
-
-      line2 = curve(
-        p.of(46.500, 20.063, 0.0),
-        p.of(26.000, 39.063, 0.0),
-        p.of(26.000, 87.563, 0.0)
-      ).linear(Math.toRadians(90), Math.toRadians(90));
-
-      line3 = line(
-        p.of(26.000, 87.563, 0.0),
-        p.of(26.000, 111.062, 0.0)
-      ).linear(Math.toRadians(90), Math.toRadians(90));
-
-      line4 = curve(
-        p.of(26.000, 111.062, 0.0),
-        p.of(36.500, 127.813, 0.0),
-        p.of(74.250, 125.063, 0.0)
-      ).linear(Math.toRadians(90), Math.toRadians(90));
-
-      line5 = line(
-        p.of(74.250, 125.063, 0.0),
-        p.of(74.250, 133.750, 0.0)
-      ).linear(Math.toRadians(-90), Math.toRadians(-90));
-    }
+    public Paths(Follower follower) {}
   }
 
   public int autonomousPathUpdate() {
@@ -109,56 +79,19 @@ public class SabraDios extends OpMode {
         setPathState(1);
         break;
       case 1:
-        if (pathTimer.milliseconds() > 4000) {
+        if (pathTimer.milliseconds() > 8000) {
           setPathState(2);
         }
         break;
       case 2:
-        follower.follow(paths.line1);
         setPathState(3);
         break;
       case 3:
-        if (!follower.isBusy()) {
+        if (pathTimer.milliseconds() > 4000) {
           setPathState(4);
         }
         break;
       case 4:
-        follower.follow(paths.line2);
-        setPathState(5);
-        break;
-      case 5:
-        if (!follower.isBusy()) {
-          setPathState(6);
-        }
-        break;
-      case 6:
-        follower.follow(paths.line3);
-        setPathState(7);
-        break;
-      case 7:
-        if (!follower.isBusy()) {
-          setPathState(8);
-        }
-        break;
-      case 8:
-        follower.follow(paths.line4);
-        setPathState(9);
-        break;
-      case 9:
-        if (!follower.isBusy()) {
-          setPathState(10);
-        }
-        break;
-      case 10:
-        follower.follow(paths.line5);
-        setPathState(11);
-        break;
-      case 11:
-        if (!follower.isBusy()) {
-          setPathState(12);
-        }
-        break;
-      case 12:
         requestOpModeStop();
         pathState = -1;
         break;

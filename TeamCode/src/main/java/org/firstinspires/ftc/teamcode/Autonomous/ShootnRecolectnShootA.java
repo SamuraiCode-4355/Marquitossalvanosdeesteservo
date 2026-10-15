@@ -19,15 +19,15 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.PedroConstants;
 
-@Autonomous(name = "Auto3")
+@Autonomous(name = "Turtle Tracer Autonomous", group = "Autonomous")
 @Configurable // Panels
-public class Auto3 extends OpMode {
+public class ShootnRecolectnShootA extends OpMode {
 
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pathing follower instance
@@ -44,7 +44,7 @@ public class Auto3 extends OpMode {
     panelsTelemetry.update(telemetry);
 
     follower = PedroConstants.create(hardwareMap);
-    follower.setPose(p.of(28.200, 119.800, 90.000));
+    follower.setPose(p.of(59.836, 134.127, -90.000));
 
     pathTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
@@ -66,39 +66,25 @@ public class Auto3 extends OpMode {
   public static class Paths {
 
     private static final PoseFactory p = PoseFactory.degrees();
-    public Path line1;
-    public Path line2;
 
-    public Paths(Follower follower) {
-      line1 = line(
-        p.of(28.200, 119.800, 0.0),
-        p.of(28.200, 25.333, 0.0)
-      ).linear(Math.toRadians(90), Math.toRadians(0));
-
-      line2 = line(p.of(28.200, 25.333, 0.0), p.of(58.167, 25.333, 0.0)).linear(
-        Math.toRadians(-90),
-        Math.toRadians(-90)
-      );
-    }
+    public Paths(Follower follower) {}
   }
 
   public int autonomousPathUpdate() {
     switch (pathState) {
       case 0:
-        follower.follow(paths.line1);
         setPathState(1);
         break;
       case 1:
-        if (!follower.isBusy()) {
+        if (pathTimer.milliseconds() > 8000) {
           setPathState(2);
         }
         break;
       case 2:
-        follower.follow(paths.line2);
         setPathState(3);
         break;
       case 3:
-        if (!follower.isBusy()) {
+        if (pathTimer.milliseconds() > 4000) {
           setPathState(4);
         }
         break;

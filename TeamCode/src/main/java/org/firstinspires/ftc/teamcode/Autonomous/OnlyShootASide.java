@@ -19,17 +19,15 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-//import org.firstinspires.ftc.teamcode.pedroPathing.PedroConstants;
 
 import org.firstinspires.ftc.teamcode.PedroConstants;
 
-@Autonomous(name = "Itzel Auto")
+@Autonomous(name = "Turtle Tracer Autonomous", group = "Autonomous")
 @Configurable // Panels
-public class ItzelAUTO extends OpMode {
+public class OnlyShootASide extends OpMode {
 
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pathing follower instance
@@ -46,7 +44,7 @@ public class ItzelAUTO extends OpMode {
     panelsTelemetry.update(telemetry);
 
     follower = PedroConstants.create(hardwareMap);
-    follower.setPose(p.of(10.000, 10.000, 0.000));
+    follower.setPose(p.of(59.836, 134.127, -90.000));
 
     pathTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
@@ -68,73 +66,29 @@ public class ItzelAUTO extends OpMode {
   public static class Paths {
 
     private static final PoseFactory p = PoseFactory.degrees();
-    public Path DriveToShoot;
-    public Path camino2;
-    public Path camino3;
-    public Path camino4;
 
-    public Paths(Follower follower) {
-      DriveToShoot = line(
-        p.of(10.000, 10.000, 0.0),
-        p.of(10.000, 42.886, 0.0)
-      ).linear(Math.toRadians(0), Math.toRadians(0));
-
-      camino2 = line(
-        p.of(10.000, 42.886, 0.0),
-        p.of(60.632, 42.886, 0.0)
-      ).linear(Math.toRadians(0), Math.toRadians(0));
-
-      camino3 = line(
-        p.of(60.632, 42.886, 0.0),
-        p.of(60.632, 10.000, 0.0)
-      ).linear(Math.toRadians(0), Math.toRadians(0));
-
-      camino4 = line(
-        p.of(60.632, 10.000, 0.0),
-        p.of(92.859, 10.000, 0.0)
-      ).linear(Math.toRadians(0), Math.toRadians(0));
-    }
+    public Paths(Follower follower) {}
   }
 
   public int autonomousPathUpdate() {
     switch (pathState) {
       case 0:
-        follower.follow(paths.DriveToShoot);
         setPathState(1);
         break;
       case 1:
-        if (!follower.isBusy()) {
+        if (pathTimer.milliseconds() > 8000) {
           setPathState(2);
         }
         break;
       case 2:
-        follower.follow(paths.camino2);
         setPathState(3);
         break;
       case 3:
-        if (!follower.isBusy()) {
+        if (pathTimer.milliseconds() > 4000) {
           setPathState(4);
         }
         break;
       case 4:
-        follower.follow(paths.camino3);
-        setPathState(5);
-        break;
-      case 5:
-        if (!follower.isBusy()) {
-          setPathState(6);
-        }
-        break;
-      case 6:
-        follower.follow(paths.camino4);
-        setPathState(7);
-        break;
-      case 7:
-        if (!follower.isBusy()) {
-          setPathState(8);
-        }
-        break;
-      case 8:
         requestOpModeStop();
         pathState = -1;
         break;

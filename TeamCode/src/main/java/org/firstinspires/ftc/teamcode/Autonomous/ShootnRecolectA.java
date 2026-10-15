@@ -19,16 +19,15 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.PedroConstants;
 
-@Autonomous (name = "Auto Line")
+@Autonomous(name = "Turtle Tracer Autonomous", group = "Autonomous")
 @Configurable // Panels
-public class TurtleTracerAutonomousLINE extends OpMode {
+public class ShootnRecolectA extends OpMode {
 
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pathing follower instance
@@ -45,7 +44,7 @@ public class TurtleTracerAutonomousLINE extends OpMode {
     panelsTelemetry.update(telemetry);
 
     follower = PedroConstants.create(hardwareMap);
-    follower.setPose(p.of(10.000, 10.000, 0.000));
+    follower.setPose(p.of(59.836, 134.127, -90.000));
 
     pathTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
@@ -67,28 +66,29 @@ public class TurtleTracerAutonomousLINE extends OpMode {
   public static class Paths {
 
     private static final PoseFactory p = PoseFactory.degrees();
-    public Path DriveToShoot;
 
-    public Paths(Follower follower) {
-      DriveToShoot = line(
-        p.of(10.000, 10.000, 0.0),
-        p.of(35.919, 10.000, 0.0)
-      ).linear(Math.toRadians(0), Math.toRadians(0));
-    }
+    public Paths(Follower follower) {}
   }
 
   public int autonomousPathUpdate() {
     switch (pathState) {
       case 0:
-        follower.follow(paths.DriveToShoot);
         setPathState(1);
         break;
       case 1:
-        if (!follower.isBusy()) {
+        if (pathTimer.milliseconds() > 8000) {
           setPathState(2);
         }
         break;
       case 2:
+        setPathState(3);
+        break;
+      case 3:
+        if (pathTimer.milliseconds() > 4000) {
+          setPathState(4);
+        }
+        break;
+      case 4:
         requestOpModeStop();
         pathState = -1;
         break;

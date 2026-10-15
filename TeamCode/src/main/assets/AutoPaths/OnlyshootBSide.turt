@@ -1,0 +1,79 @@
+{
+  "startPoint": {
+    "x": 59.835880933226065,
+    "y": 134.12743362831858,
+    "heading": "constant",
+    "degrees": -90,
+    "locked": false
+  },
+  "lines": [],
+  "shapes": [
+    {
+      "id": "biobuzz-hive-red",
+      "name": "HiveRedSide",
+      "vertices": [
+        {
+          "x": 46.5,
+          "y": 92
+        },
+        {
+          "x": 46.5,
+          "y": 52
+        },
+        {
+          "x": 49,
+          "y": 52
+        },
+        {
+          "x": 49,
+          "y": 92
+        }
+      ],
+      "color": "#3f3f3f",
+      "fillColor": "#fca5a5",
+      "type": "obstacle"
+    },
+    {
+      "id": "biobuzz-hive-blue",
+      "name": "HiveBlueSide",
+      "vertices": [
+        {
+          "x": 95,
+          "y": 92
+        },
+        {
+          "x": 95,
+          "y": 52
+        },
+        {
+          "x": 97.5,
+          "y": 52
+        },
+        {
+          "x": 97.5,
+          "y": 92
+        }
+      ],
+      "color": "#3f3f3f",
+      "fillColor": "#fca5a5",
+      "type": "obstacle"
+    }
+  ],
+  "sequence": [
+    {
+      "kind": "wait",
+      "id": "mv8ebf0p-5rpry1",
+      "name": "WaitToShoot",
+      "durationMs": 8000,
+      "locked": false
+    },
+    {
+      "kind": "wait",
+      "id": "mv8ek54k-vqzf4i",
+      "name": "Shoot",
+      "durationMs": 4000,
+      "locked": false
+    }
+  ],
+  "extraData": {}
+}

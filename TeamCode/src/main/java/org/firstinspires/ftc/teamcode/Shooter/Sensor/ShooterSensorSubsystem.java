@@ -6,12 +6,11 @@ import com.seattlesolvers.solverslib.hardware.SensorColor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class SensorTest extends SubsystemBase {
+public class ShooterSensorSubsystem extends SubsystemBase {
     private SensorColor colorSensor;
-    public SensorTest(HardwareMap hwMap, Telemetry telemetry){
-        //colorSensor = new SensorColor(hwMap, "CS1");
+    public ShooterSensorSubsystem(HardwareMap hwMap, Telemetry telemetry){
+        //colorSensor = new SensorColor(hwMap, "CSL");
     }
-
     public int alpha(){
         return colorSensor.alpha();
     }
@@ -23,6 +22,9 @@ public class SensorTest extends SubsystemBase {
     }
     public int red(){
         return colorSensor.red();
+    }
+    public int[] getARGB() {
+        return new int[]{alpha(), red(), green(), blue()};
     }
     @Override
     public void periodic() {
