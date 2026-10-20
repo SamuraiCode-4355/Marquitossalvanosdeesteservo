@@ -12,12 +12,9 @@ import org.firstinspires.ftc.teamcode.Chasis.ChasisCommand;
 import org.firstinspires.ftc.teamcode.Chasis.ChasisSusbystem;
 import org.firstinspires.ftc.teamcode.Intake.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.Shooter.Sensor.HuskySubsystem;
-import org.firstinspires.ftc.teamcode.Shooter.Sensor.ShooterSensorSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoCommand;
 import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterCommand;
-import org.firstinspires.ftc.teamcode.Shooter.ShooterCommandSensor;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 
 import java.util.Arrays;
@@ -35,10 +32,6 @@ public class MainController extends CommandOpMode {
     IntakeSubsystem intakeSubsystem;
     ShooterSubsystem shooterSubsystem;
     ShooterServoSubsystem shooterServoSubsystem;
-    ShooterSensorSubsystem shooterSensor;
-
-    HuskySubsystem huskySubsystem;
-
     ConfigureIMU configureIMU;
 
     @Override
@@ -52,13 +45,10 @@ public class MainController extends CommandOpMode {
         //----------------------------/Subsystems/----------------------
 
         configureIMU = new ConfigureIMU(hardwareMap);
-        huskySubsystem = new HuskySubsystem(hardwareMap);
         chasisSusbystem = new ChasisSusbystem(hardwareMap, configureIMU);
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
-        shooterSubsystem = new ShooterSubsystem(hardwareMap, huskySubsystem);
+        shooterSubsystem = new ShooterSubsystem(hardwareMap);
         shooterServoSubsystem = new ShooterServoSubsystem(hardwareMap);
-
-        shooterSensor = new ShooterSensorSubsystem(hardwareMap, telemetry);
         telemetry.update();
 
         //----------------------------/Commands-Executors/----------------------
@@ -97,10 +87,6 @@ public class MainController extends CommandOpMode {
                 mechanismController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1
         ).whileActiveContinuous(new ShooterCommand(shooterSubsystem));
 
-        schedule(
-                new ShooterCommandSensor(shooterSubsystem)
-        );
-
     }
 
     //----------------------------/Telemetry/----------------------
@@ -116,15 +102,6 @@ public class MainController extends CommandOpMode {
         telemetry.addData("Shooter Encoder Velocity", shooterSubsystem.Power());
         telemetry.addData("Shooter Raw Power", shooterSubsystem.Raw());
 
-        //----------------------------/Telemetry/----------------------
-
-        //telemetry.addData("Colors ARGB", Arrays.toString(shooterSensor.getARGB()));
-        if (huskySubsystem.getColor(1)) {
-            telemetry.addLine("Color Detected");
-        }
-        else {
-            telemetry.addLine("No color detected");
-        }
 
         telemetry.update();
 

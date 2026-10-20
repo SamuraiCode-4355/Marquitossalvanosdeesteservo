@@ -12,8 +12,8 @@ public class IntakeSubsystem extends SubsystemBase {
         IntakeMotor.setInverted(true);
     }
 
-    public void setPower(double power) {
-        IntakeMotor.set(power);
+    public void start() {
+        IntakeMotor.set(1);
     }
 
     public void stop() {
