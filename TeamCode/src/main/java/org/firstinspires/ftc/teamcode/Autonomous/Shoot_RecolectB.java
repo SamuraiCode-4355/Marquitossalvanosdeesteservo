@@ -1,7 +1,7 @@
 /* ============================================================= *
  *                 Turtle Tracer — Auto-Generated                *
  *                                                               *
- *  Version: 2.5.0.                                              *
+ *  Version: 2.5.1.                                              *
  *  Copyright (c) 2026 Matthew Allen                             *
  *                                                               *
  *  THIS FILE IS AUTO-GENERATED — DO NOT EDIT MANUALLY.          *
@@ -19,9 +19,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -32,9 +30,9 @@ import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
-@Autonomous(name = "Ciclo Completo A")
+@Autonomous(name = "HUMAN - Disparar y Recolectar B")
 @Configurable // Panels
-public class Shoot_Recolect_ShootA extends OpMode {
+public class Shoot_RecolectB extends OpMode {
 
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pathing follower instance
@@ -43,29 +41,29 @@ public class Shoot_Recolect_ShootA extends OpMode {
   private ElapsedTime pathTimer; // Timer for path state machine
   private Paths paths; // Paths defined in the Paths class
   ChasisSusbystem chasisSusbystem;
+  ConfigureIMU configureIMU;
   ShooterSubsystem shooterSubsystem;
   IntakeSubsystem intakeSubsystem;
-  ConfigureIMU configureIMU;
   ElapsedTime intakeTimer;
   ElapsedTime shootTimer;
 
   @Override
   public void init() {
-    panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    configureIMU = new ConfigureIMU(hardwareMap);
     chasisSusbystem = new ChasisSusbystem(hardwareMap, configureIMU);
     shooterSubsystem = new ShooterSubsystem(hardwareMap);
     intakeSubsystem = new IntakeSubsystem(hardwareMap);
+    panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     // ...
     panelsTelemetry.debug("Status", "Initialized");
     panelsTelemetry.update(telemetry);
 
     follower = Constants.create(hardwareMap);
-    follower.setPose(p.of(60.000, 9.681, 90.000));
+    follower.setPose(p.of(60.000, 134.829, -90.000));
 
     pathTimer = new ElapsedTime();
-    shootTimer = new ElapsedTime();
+
     intakeTimer = new ElapsedTime();
+    shootTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
   }
 
@@ -87,25 +85,17 @@ public class Shoot_Recolect_ShootA extends OpMode {
     private static final PoseFactory p = PoseFactory.degrees();
     public Path line1;
     public Path line2;
-    public Path line3;
 
     public Paths(Follower follower) {
-      line1 = curve(
-        p.of(60.000, 9.681, 0.0),
-        p.of(19.407, 37.381, 0.0),
-        p.of(18.903, 107.646, 0.0)
-      ).linear(Math.toRadians(90), Math.toRadians(180));
+      line1 = line(
+        p.of(60.000, 134.829, 0.0),
+        p.of(60.000, 108.068, 0.0)
+      ).linear(Math.toRadians(-90), Math.toRadians(-90));
 
-      line2 = curve(
-        p.of(18.903, 107.646, 0.0),
-        p.of(60.000, 113.522, 0.0),
-        p.of(61.115, 123.173, 0.0)
-      ).linear(Math.toRadians(180), Math.toRadians(0));
-
-      line3 = line(
-        p.of(61.115, 123.173, 0.0),
-        p.of(61.115, 133.204, 0.0)
-      ).linear(Math.toRadians(0), Math.toRadians(-90));
+      line2 = line(
+        p.of(60.000, 108.068, 0.0),
+        p.of(16.153, 108.068, 0.0)
+      ).linear(Math.toRadians(180), Math.toRadians(180));
     }
   }
 
@@ -126,28 +116,25 @@ public class Shoot_Recolect_ShootA extends OpMode {
         }
         break;
       case 2:
-        follower.follow(paths.line1);
         setPathState(3);
         break;
       case 3:
-        if (!follower.isBusy()) {
+        if (pathTimer.milliseconds() > 4000) {
           setPathState(4);
         }
         break;
       case 4:
+        follower.follow(paths.line1);
         setPathState(5);
         break;
       case 5:
-        if (intakeTimer.milliseconds() < 4000) {
-          intakeSubsystem.start();
-        }
-        else {
-          intakeSubsystem.stop();
+        if (!follower.isBusy()) {
           setPathState(6);
         }
         break;
       case 6:
-        follower.follow(paths.line2);
+        follower.hold(follower.pose().withHeading(3.142));
+        follower.algorithm().reset();
         setPathState(7);
         break;
       case 7:
@@ -156,7 +143,7 @@ public class Shoot_Recolect_ShootA extends OpMode {
         }
         break;
       case 8:
-        follower.follow(paths.line3);
+        follower.follow(paths.line2);
         setPathState(9);
         break;
       case 9:
@@ -168,13 +155,11 @@ public class Shoot_Recolect_ShootA extends OpMode {
         setPathState(11);
         break;
       case 11:
-        if (shootTimer.milliseconds() < 4000) {
-          chasisSusbystem.setLock(true);
-          shooterSubsystem.start();
+        if (intakeTimer.milliseconds() < 5000) {
+          intakeSubsystem.start();
         }
         else {
-          chasisSusbystem.setLock(false);
-          shooterSubsystem.stop();
+          intakeSubsystem.stop();
           setPathState(12);
         }
         break;
@@ -189,6 +174,7 @@ public class Shoot_Recolect_ShootA extends OpMode {
   public void setPathState(int pState) {
     pathState = pState;
     pathTimer.reset();
+
     shootTimer.reset();
     intakeTimer.reset();
   }

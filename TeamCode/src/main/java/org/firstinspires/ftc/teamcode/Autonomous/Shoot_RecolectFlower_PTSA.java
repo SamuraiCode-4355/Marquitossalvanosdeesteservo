@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
-@Autonomous(name = "Disparar, Recolectar flower y PPD A")
+@Autonomous(name = "FLOWER - Disparar, Recoger y Preparse A")
 @Configurable // Panels
 public class Shoot_RecolectFlower_PTSA extends OpMode {
 
@@ -39,11 +39,13 @@ public class Shoot_RecolectFlower_PTSA extends OpMode {
   private final PoseFactory p = PoseFactory.degrees();
   private int pathState; // Current autonomous path state (state machine)
   private ElapsedTime pathTimer; // Timer for path state machine
+  ElapsedTime intakeTimer;
   ElapsedTime shootTimer;
   ChasisSusbystem chasisSusbystem;
   IntakeSubsystem intakeSubsystem;
   ConfigureIMU configureIMU;
   ShooterSubsystem shooterSubsystem;
+
   private Paths paths; // Paths defined in the Paths class
 
   @Override
@@ -63,6 +65,8 @@ public class Shoot_RecolectFlower_PTSA extends OpMode {
 
     pathTimer = new ElapsedTime();
     shootTimer = new ElapsedTime();
+    intakeTimer = new ElapsedTime();
+
     paths = new Paths(follower); // Build paths
   }
 
@@ -162,6 +166,8 @@ public class Shoot_RecolectFlower_PTSA extends OpMode {
   public void setPathState(int pState) {
     pathState = pState;
     pathTimer.reset();
+
+    intakeTimer.reset();
     shootTimer.reset();
   }
 }

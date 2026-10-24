@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
-@Autonomous(name = "Disparar, Recoger linea y Dispara A")
+@Autonomous(name = "HUMAN - Disparar, Recoger linea y Dispara A")
 @Configurable // Panels
 public class Shoot_RecolectLine_ShootA extends OpMode {
 

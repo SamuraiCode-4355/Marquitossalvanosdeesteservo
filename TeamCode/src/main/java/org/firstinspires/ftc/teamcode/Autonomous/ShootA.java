@@ -28,6 +28,7 @@ import org.firstinspires.ftc.teamcode.Chasis.ChasisSusbystem;
 import org.firstinspires.ftc.teamcode.ConfigureIMU;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.Drawing;
 
 @Autonomous(name = "Disparar A")
 @Configurable // Panels
@@ -55,7 +56,7 @@ public class ShootA extends OpMode {
     panelsTelemetry.update(telemetry);
 
     follower = Constants.create(hardwareMap);
-    follower.setPose(p.of(60.000, 9.639, 90.000));
+    follower.setPose(p.of(60.000, 10.000, 90.000));
 
     pathTimer = new ElapsedTime();
     shootTimer = new ElapsedTime();
@@ -64,15 +65,19 @@ public class ShootA extends OpMode {
 
   @Override
   public void loop() {
-    follower.update(); // Update follower
-    pathState = autonomousPathUpdate(); // Update autonomous state machine
+    follower.update();
+    pathState = autonomousPathUpdate();
 
-    // Log values to Panels and Driver Station
+    // Dibujo en Panels
+    Drawing.drawRobot(follower.pose());   // usa el heading del follower, no el IMU
+    Drawing.sendPacket();
+
     panelsTelemetry.debug("Path State", pathState);
     panelsTelemetry.debug("X", follower.pose().x());
     panelsTelemetry.debug("Y", follower.pose().y());
     panelsTelemetry.debug("Heading", follower.pose().heading());
     panelsTelemetry.update(telemetry);
+
   }
 
   public static class Paths {
@@ -138,6 +143,8 @@ public class ShootA extends OpMode {
 
   public void setPathState(int pState) {
     pathState = pState;
+    shootTimer.reset();
     pathTimer.reset();
   }
+
 }

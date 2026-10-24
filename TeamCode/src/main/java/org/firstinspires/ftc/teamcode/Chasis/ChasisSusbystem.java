@@ -32,6 +32,12 @@ public class ChasisSusbystem extends SubsystemBase {
         fr_motor = new Motor(hardwareMap, "FRMotor");
         bl_motor = new Motor(hardwareMap, "BLMotor");
         br_motor = new Motor(hardwareMap, "BRMotor");
+
+        fl_motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        fr_motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        bl_motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        br_motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+
         pidRotation = new PIDController(0.02,0,0);
        // pidRotation.setSetPoint(90);
 

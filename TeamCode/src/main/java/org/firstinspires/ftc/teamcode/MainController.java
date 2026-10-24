@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.command.InstantCommand;
@@ -16,6 +18,8 @@ import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoCommand;
 import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterCommand;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.Drawing;
 
 import java.util.Arrays;
 
@@ -33,6 +37,7 @@ public class MainController extends CommandOpMode {
     ShooterSubsystem shooterSubsystem;
     ShooterServoSubsystem shooterServoSubsystem;
     ConfigureIMU configureIMU;
+    Follower follower;
 
     @Override
     public void initialize() {
@@ -49,6 +54,11 @@ public class MainController extends CommandOpMode {
         intakeSubsystem = new IntakeSubsystem(hardwareMap);
         shooterSubsystem = new ShooterSubsystem(hardwareMap);
         shooterServoSubsystem = new ShooterServoSubsystem(hardwareMap);
+
+        Drawing.init();
+        follower = Constants.create(hardwareMap);
+        follower.setPose(new Pose(60.00, 9.639, 0));
+
         telemetry.update();
 
         //----------------------------/Commands-Executors/----------------------
@@ -102,6 +112,9 @@ public class MainController extends CommandOpMode {
         telemetry.addData("Shooter Encoder Velocity", shooterSubsystem.Power());
         telemetry.addData("Shooter Raw Power", shooterSubsystem.Raw());
 
+        follower.update();
+        Drawing.drawRobot(follower.pose());
+        Drawing.sendPacket();
 
         telemetry.update();
 

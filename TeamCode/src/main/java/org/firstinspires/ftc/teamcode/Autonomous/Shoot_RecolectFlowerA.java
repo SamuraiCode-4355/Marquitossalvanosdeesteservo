@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
-@Autonomous(name = "Dispara y Recoger flower A")
+@Autonomous(name = "FLOWER - Disparar y Recolectar")
 @Configurable // Panels
 public class Shoot_RecolectFlowerA extends OpMode {
 

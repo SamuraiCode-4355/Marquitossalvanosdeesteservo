@@ -12,7 +12,7 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor.setInverted(true);
     }
     public void start(){
-        shooterMotor.set(0.8);
+        shooterMotor.set(-1.0);
     }
     public void stop(){
         shooterMotor.set(0);
