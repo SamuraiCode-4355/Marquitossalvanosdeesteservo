@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Chasis.ChasisCommand;
 import org.firstinspires.ftc.teamcode.Chasis.ChasisSusbystem;
 import org.firstinspires.ftc.teamcode.Intake.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Shooter.ReverseShooterCommand;
 import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoCommand;
 import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterCommand;
@@ -89,6 +90,9 @@ public class MainController extends CommandOpMode {
         new Trigger(() ->
                 mechanismController.getButton(GamepadKeys.Button.B)
         ).whileActiveContinuous(new ShooterServoCommand(shooterServoSubsystem));
+        new Trigger(() ->
+                mechanismController.getButton(GamepadKeys.Button.X)
+        ).whileActiveContinuous(new ReverseShooterCommand(shooterSubsystem));
 
 
         //----------------------------/Shooter/----------------------

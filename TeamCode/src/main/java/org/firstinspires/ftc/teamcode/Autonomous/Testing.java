@@ -1,7 +1,7 @@
 /* ============================================================= *
  *                 Turtle Tracer — Auto-Generated                *
  *                                                               *
- *  Version: 2.5.1.                                              *
+ *  Version: 2.6.0.                                              *
  *  Copyright (c) 2026 Matthew Allen                             *
  *                                                               *
  *  THIS FILE IS AUTO-GENERATED — DO NOT EDIT MANUALLY.          *
@@ -23,16 +23,12 @@ import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.Chasis.ChasisSusbystem;
-import org.firstinspires.ftc.teamcode.ConfigureIMU;
-import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.Drawing;
 
-@Autonomous(name = "HUMAN - Disparar y Recolectar B")
+@Autonomous(name = "Testingggg!")
 @Configurable // Panels
-public class Shoot_RecolectB extends OpMode {
+public class Testing extends OpMode {
 
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pathing follower instance
@@ -40,30 +36,18 @@ public class Shoot_RecolectB extends OpMode {
   private int pathState; // Current autonomous path state (state machine)
   private ElapsedTime pathTimer; // Timer for path state machine
   private Paths paths; // Paths defined in the Paths class
-  ChasisSusbystem chasisSusbystem;
-  ConfigureIMU configureIMU;
-  ShooterSubsystem shooterSubsystem;
-  IntakeSubsystem intakeSubsystem;
-  ElapsedTime intakeTimer;
-  ElapsedTime shootTimer;
 
   @Override
   public void init() {
-    chasisSusbystem = new ChasisSusbystem(hardwareMap, configureIMU);
-    shooterSubsystem = new ShooterSubsystem(hardwareMap);
-    intakeSubsystem = new IntakeSubsystem(hardwareMap);
     panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     // ...
     panelsTelemetry.debug("Status", "Initialized");
     panelsTelemetry.update(telemetry);
 
     follower = Constants.create(hardwareMap);
-    follower.setPose(p.of(60.000, 134.829, -90.000));
+    follower.setPose(p.of(60.000, 13.061, 90.000));
 
     pathTimer = new ElapsedTime();
-
-    intakeTimer = new ElapsedTime();
-    shootTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
   }
 
@@ -71,6 +55,9 @@ public class Shoot_RecolectB extends OpMode {
   public void loop() {
     follower.update(); // Update follower
     pathState = autonomousPathUpdate(); // Update autonomous state machine
+
+    Drawing.drawRobot(follower.pose());   // usa el heading del follower, no el IMU
+    Drawing.sendPacket();
 
     // Log values to Panels and Driver Station
     panelsTelemetry.debug("Path State", pathState);
@@ -83,87 +70,56 @@ public class Shoot_RecolectB extends OpMode {
   public static class Paths {
 
     private static final PoseFactory p = PoseFactory.degrees();
-    public Path line1;
-    public Path line2;
+    public Path DriveToShoot;
 
     public Paths(Follower follower) {
-      line1 = line(
-        p.of(60.000, 134.829, 0.0),
-        p.of(60.000, 108.068, 0.0)
-      ).linear(Math.toRadians(-90), Math.toRadians(-90));
-
-      line2 = line(
-        p.of(60.000, 108.068, 0.0),
-        p.of(16.153, 108.068, 0.0)
-      ).linear(Math.toRadians(180), Math.toRadians(180));
+      DriveToShoot = line(
+        p.of(60.000, 13.061, 0.0),
+        p.of(60.000, 37.407, 0.0)
+      ).linear(Math.toRadians(90), Math.toRadians(90));
     }
   }
 
   public int autonomousPathUpdate() {
     switch (pathState) {
       case 0:
+        follower.follow(paths.DriveToShoot);
         setPathState(1);
         break;
       case 1:
-        if (shootTimer.milliseconds() < 4000) {
-          chasisSusbystem.setLock(true);
-          shooterSubsystem.start();
-        }
-        else {
-          chasisSusbystem.setLock(false);
-          shooterSubsystem.stop();
+        if (!follower.isBusy()) {
           setPathState(2);
         }
         break;
       case 2:
+        follower.hold(follower.pose().withHeading(3.142));
+        follower.algorithm().reset();
         setPathState(3);
         break;
       case 3:
-        if (pathTimer.milliseconds() > 4000) {
+        if (
+          Math.abs(
+            com.pedropathing.utils.Angle.error(follower.pose().heading(), 3.142)
+          ) < 0.01
+        ) {
           setPathState(4);
         }
         break;
       case 4:
-        follower.follow(paths.line1);
+        follower.hold(follower.pose().withHeading(0.000));
+        follower.algorithm().reset();
         setPathState(5);
         break;
       case 5:
-        if (!follower.isBusy()) {
+        if (
+          Math.abs(
+            com.pedropathing.utils.Angle.error(follower.pose().heading(), 0.000)
+          ) < 0.01
+        ) {
           setPathState(6);
         }
         break;
       case 6:
-        follower.hold(follower.pose().withHeading(3.142));
-        follower.algorithm().reset();
-        setPathState(7);
-        break;
-      case 7:
-        if (!follower.isBusy()) {
-          setPathState(8);
-        }
-        break;
-      case 8:
-        follower.follow(paths.line2);
-        setPathState(9);
-        break;
-      case 9:
-        if (!follower.isBusy()) {
-          setPathState(10);
-        }
-        break;
-      case 10:
-        setPathState(11);
-        break;
-      case 11:
-        if (intakeTimer.milliseconds() < 5000) {
-          intakeSubsystem.start();
-        }
-        else {
-          intakeSubsystem.stop();
-          setPathState(12);
-        }
-        break;
-      case 12:
         requestOpModeStop();
         pathState = -1;
         break;
@@ -174,8 +130,5 @@ public class Shoot_RecolectB extends OpMode {
   public void setPathState(int pState) {
     pathState = pState;
     pathTimer.reset();
-
-    shootTimer.reset();
-    intakeTimer.reset();
   }
 }
