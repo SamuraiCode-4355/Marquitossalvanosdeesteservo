@@ -8,7 +8,7 @@
  *  Changes will be overwritten when regenerated.                *
  * ============================================================= */
 
-package org.firstinspires.ftc.teamcode.Commands.AutoCommands;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
@@ -19,20 +19,21 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.PedroConstants;
+
+import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous(
-  name = "BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park",
+  name = "Disparar Abajo, Garden, Disparar Abajo, Flower, Aparcarse",
   group = "Autonomous"
 )
 @Configurable // Panels
-public class BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park extends OpMode {
+public class BLUE_DOWN_ShootDown_IntakeGarden_ShootDown_IntakeFlower_Park extends OpMode {
 
   private TelemetryManager panelsTelemetry; // Panels Telemetry instance
   public Follower follower; // Pathing follower instance
@@ -40,18 +41,27 @@ public class BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park extends OpMode {
   private int pathState; // Current autonomous path state (state machine)
   private ElapsedTime pathTimer; // Timer for path state machine
   private Paths paths; // Paths defined in the Paths class
+  private ShooterSubsystem shooterSubsystem;
+  private IntakeSubsystem intakeSubsystem;
+  ElapsedTime shootTimer;
+  ElapsedTime intakeTimer;
+
 
   @Override
   public void init() {
     panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     // ...
+    shooterSubsystem = new ShooterSubsystem(hardwareMap);
+    intakeSubsystem = new IntakeSubsystem(hardwareMap);
     panelsTelemetry.debug("Status", "Initialized");
     panelsTelemetry.update(telemetry);
 
-    follower = PedroConstants.create(hardwareMap);
+    follower = Constants.create(hardwareMap);
     follower.setPose(p.of(60.000, 9.751, 90.000));
 
     pathTimer = new ElapsedTime();
+    shootTimer = new ElapsedTime();
+    intakeTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
   }
 
@@ -113,7 +123,11 @@ public class BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park extends OpMode {
         setPathState(1);
         break;
       case 1:
-        if (pathTimer.milliseconds() > 4000) {
+        if (shootTimer.milliseconds() < 4000) {
+          shooterSubsystem.start();
+        }
+        else {
+          shooterSubsystem.stop();
           setPathState(2);
         }
         break;
@@ -139,7 +153,11 @@ public class BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park extends OpMode {
         setPathState(7);
         break;
       case 7:
-        if (pathTimer.milliseconds() > 3000) {
+        if (intakeTimer.milliseconds() < 3000) {
+          intakeSubsystem.start();
+        }
+        else {
+          intakeSubsystem.stop();
           setPathState(8);
         }
         break;
@@ -156,7 +174,11 @@ public class BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park extends OpMode {
         setPathState(11);
         break;
       case 11:
-        if (pathTimer.milliseconds() > 4000) {
+        if (shootTimer.milliseconds() < 4000) {
+          shooterSubsystem.start();
+        }
+        else {
+          shooterSubsystem.stop();
           setPathState(12);
         }
         break;
@@ -173,7 +195,11 @@ public class BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park extends OpMode {
         setPathState(15);
         break;
       case 15:
-        if (pathTimer.milliseconds() > 3000) {
+        if (intakeTimer.milliseconds() < 3000) {
+          intakeSubsystem.start();
+        }
+        else {
+          intakeSubsystem.stop();
           setPathState(16);
         }
         break;
@@ -197,5 +223,7 @@ public class BLUE_DOWN_GARDEN_ShootDown_Intake_ShootDown_Park extends OpMode {
   public void setPathState(int pState) {
     pathState = pState;
     pathTimer.reset();
+    intakeTimer.reset();
+    shootTimer.reset();
   }
 }

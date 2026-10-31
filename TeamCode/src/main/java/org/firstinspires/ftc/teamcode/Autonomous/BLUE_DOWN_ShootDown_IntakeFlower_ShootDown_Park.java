@@ -8,7 +8,7 @@
  *  Changes will be overwritten when regenerated.                *
  * ============================================================= */
 
-package org.firstinspires.ftc.teamcode.Commands.AutoCommands;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
@@ -19,16 +19,17 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
-import com.pedropathing.paths.interpolator.Interpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.PedroConstants;
+
+import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous(
-  name = "BLUE_DOWN_ShootDown_IntakeFlower_ShootDown_Park",
+  name = "Disparar Abajo, Flower, Disparar Abajo",
   group = "Autonomous"
 )
 @Configurable // Panels
@@ -40,18 +41,27 @@ public class BLUE_DOWN_ShootDown_IntakeFlower_ShootDown_Park extends OpMode {
   private int pathState; // Current autonomous path state (state machine)
   private ElapsedTime pathTimer; // Timer for path state machine
   private Paths paths; // Paths defined in the Paths class
+  private ShooterSubsystem shooterSubsystem;
+  private IntakeSubsystem intakeSubsystem;
+  ElapsedTime shootTimer;
+  ElapsedTime intakeTimer;
 
   @Override
   public void init() {
     panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+    shooterSubsystem = new ShooterSubsystem(hardwareMap);
+    intakeSubsystem = new IntakeSubsystem(hardwareMap);
     // ...
     panelsTelemetry.debug("Status", "Initialized");
     panelsTelemetry.update(telemetry);
 
-    follower = PedroConstants.create(hardwareMap);
+    follower = Constants.create(hardwareMap);
     follower.setPose(p.of(60.000, 9.643, 90.000));
 
     pathTimer = new ElapsedTime();
+
+    shootTimer = new ElapsedTime();
+    intakeTimer = new ElapsedTime();
     paths = new Paths(follower); // Build paths
   }
 
@@ -96,11 +106,16 @@ public class BLUE_DOWN_ShootDown_IntakeFlower_ShootDown_Park extends OpMode {
 
   public int autonomousPathUpdate() {
     switch (pathState) {
+
       case 0:
         setPathState(1);
         break;
       case 1:
-        if (pathTimer.milliseconds() > 4000) {
+        if (shootTimer.milliseconds() < 4000) {
+          shooterSubsystem.start();
+        }
+        else {
+          shooterSubsystem.stop();
           setPathState(2);
         }
         break;
@@ -109,7 +124,7 @@ public class BLUE_DOWN_ShootDown_IntakeFlower_ShootDown_Park extends OpMode {
         setPathState(3);
         break;
       case 3:
-        if (!follower.isBusy()) {
+        if(!follower.isBusy()) {
           setPathState(4);
         }
         break;
@@ -117,7 +132,11 @@ public class BLUE_DOWN_ShootDown_IntakeFlower_ShootDown_Park extends OpMode {
         setPathState(5);
         break;
       case 5:
-        if (pathTimer.milliseconds() > 4000) {
+        if (shootTimer.milliseconds() < 4000) {
+          intakeSubsystem.start();
+        }
+        else {
+          intakeSubsystem.stop();
           setPathState(6);
         }
         break;
@@ -126,20 +145,32 @@ public class BLUE_DOWN_ShootDown_IntakeFlower_ShootDown_Park extends OpMode {
         setPathState(7);
         break;
       case 7:
-        if (!follower.isBusy()) {
+        if(!follower.isBusy()) {
           setPathState(8);
         }
         break;
       case 8:
-        follower.follow(paths.line3);
         setPathState(9);
         break;
       case 9:
-        if (!follower.isBusy()) {
+        if (shootTimer.milliseconds() < 4000) {
+          shooterSubsystem.start();
+        }
+        else {
+          shooterSubsystem.stop();
           setPathState(10);
         }
         break;
       case 10:
+        follower.follow(paths.line3);
+        setPathState(11);
+        break;
+      case 11:
+        if(!follower.isBusy()) {
+          setPathState(12);
+        }
+        break;
+      case 12:
         requestOpModeStop();
         pathState = -1;
         break;
@@ -150,5 +181,8 @@ public class BLUE_DOWN_ShootDown_IntakeFlower_ShootDown_Park extends OpMode {
   public void setPathState(int pState) {
     pathState = pState;
     pathTimer.reset();
+
+    intakeTimer.reset();
+    shootTimer.reset();
   }
 }

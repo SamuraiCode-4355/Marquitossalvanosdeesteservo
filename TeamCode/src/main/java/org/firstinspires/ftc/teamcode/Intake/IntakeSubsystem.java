@@ -9,11 +9,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public IntakeSubsystem(HardwareMap hardwareMap){
         IntakeMotor = new Motor(hardwareMap, "IntakeMotor");
-        IntakeMotor.setInverted(true);
     }
 
     public void start() {
         IntakeMotor.set(1);
+    }
+    public void reverse() {
+        IntakeMotor.set(-1);
     }
 
     public void stop() {
