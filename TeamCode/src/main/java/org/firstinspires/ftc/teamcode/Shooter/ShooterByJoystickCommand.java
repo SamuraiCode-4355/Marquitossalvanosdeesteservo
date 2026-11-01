@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.Shooter;
 
 import com.seattlesolvers.solverslib.command.CommandBase;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 
-public class ReverseShooterCommand extends CommandBase {
+public class ShooterByJoystickCommand extends CommandBase {
     ShooterSubsystem shooterSubsystem;
-    public ReverseShooterCommand(ShooterSubsystem shooterSubsystem){
+    GamepadEx controller;
+    double velocity;
+    public ShooterByJoystickCommand(ShooterSubsystem shooterSubsystem, GamepadEx gamepadEx){
         this.shooterSubsystem = shooterSubsystem;
+        this.controller = gamepadEx;
         addRequirements(shooterSubsystem);
     }
 
@@ -16,18 +20,16 @@ public class ReverseShooterCommand extends CommandBase {
 
     @Override
     public void execute() {
-        super.execute();
-        shooterSubsystem.reverse();
+        shooterSubsystem.joystickPower(controller);
     }
 
     @Override
     public void end(boolean interrupted) {
         super.end(interrupted);
-        shooterSubsystem.stop();
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return super.isFinished();
     }
 }

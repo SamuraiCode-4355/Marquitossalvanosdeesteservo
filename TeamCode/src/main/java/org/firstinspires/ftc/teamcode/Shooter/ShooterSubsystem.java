@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDController;
 import com.seattlesolvers.solverslib.controller.PIDFController;
+import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.hardware.motors.Motor;
 import com.seattlesolvers.solverslib.hardware.motors.MotorEx;
 
@@ -29,8 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public void start()   {
         setTargetVelocity(620);
     }
-    public void reverse() {
-        setTargetVelocity(-620);
+    public void joystickPower(GamepadEx controller){
+        shooterMotor.set(controller.getLeftX());
     }
     public void stop()    {
         setTargetVelocity(0);
