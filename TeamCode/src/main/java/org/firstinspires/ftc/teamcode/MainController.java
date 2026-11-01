@@ -103,8 +103,9 @@ public class MainController extends CommandOpMode {
 
         new Trigger(() ->
                 mechanismController.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1
-        ).whileActiveContinuous(new ShooterCommand(shooterSubsystem));
+        ).whileActiveContinuous(new ShooterCommand(shooterSubsystem, 620));
 
+        new InstantCommand(() -> shooterSubsystem.setTargetVelocity(0), shooterSubsystem);
     }
 
     //----------------------------/Telemetry/----------------------
@@ -116,9 +117,7 @@ public class MainController extends CommandOpMode {
         telemetry.addData("Heading Lock", chasisSusbystem.isLockEnabled() ? "ACTIVADO" : "DESACTIVADO");
         telemetry.addData("Heading", configureIMU.getHeading(AngleUnit.DEGREES));
         telemetry.addData("RX", chasisSusbystem.getOutPID());
-        telemetry.addData("Shooter RPM", shooterSubsystem.RPM());
-        telemetry.addData("Shooter Encoder Velocity", shooterSubsystem.Power());
-        telemetry.addData("Shooter Raw Power", shooterSubsystem.Raw());
+        telemetry.addData("Shooter RPM", shooterSubsystem.getVelocity());
 
         follower.update();
         Drawing.drawRobot(follower.pose());
