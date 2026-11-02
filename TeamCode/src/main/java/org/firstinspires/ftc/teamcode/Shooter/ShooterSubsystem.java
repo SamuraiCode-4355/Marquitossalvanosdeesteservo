@@ -19,7 +19,7 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterMotor.setInverted(false);
         shooterMotor.setRunMode(Motor.RunMode.RawPower);
 
-        pidController = new PIDFController(0.01, 0, 0, 0.004);
+        pidController = new PIDFController(ShooterConfig.kP, ShooterConfig.kI, ShooterConfig.kD, ShooterConfig.kF);
         pidController.setTolerance(30);
     }
 
@@ -29,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void start()   {
-        setTargetVelocity(1000);
+        setTargetVelocity(ShooterConfig.targetVelocity);
     }
     public void stop()    {
         setTargetVelocity(0);

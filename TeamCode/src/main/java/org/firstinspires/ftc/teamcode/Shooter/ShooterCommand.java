@@ -5,15 +5,14 @@ import com.seattlesolvers.solverslib.command.CommandBase;
 public class ShooterCommand extends CommandBase {
     ShooterSubsystem shooterSubsystem;
     double velocity;
-    public ShooterCommand(ShooterSubsystem shooterSubsystem, double Velocity){
+    public ShooterCommand(ShooterSubsystem shooterSubsystem){
         this.shooterSubsystem = shooterSubsystem;
-        this.velocity = Velocity;
         addRequirements(shooterSubsystem);
     }
 
     @Override
     public void initialize() {
-        shooterSubsystem.setTargetVelocity(velocity);
+        shooterSubsystem.start();
         super.initialize();
     }
 
