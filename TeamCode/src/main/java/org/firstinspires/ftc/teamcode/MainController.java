@@ -13,17 +13,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Chasis.ChasisCommand;
 import org.firstinspires.ftc.teamcode.Chasis.ChasisSusbystem;
 import org.firstinspires.ftc.teamcode.Intake.IntakeCommand;
-import org.firstinspires.ftc.teamcode.Intake.IntakeCommandReverse;
 import org.firstinspires.ftc.teamcode.Intake.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoCommand;
 import org.firstinspires.ftc.teamcode.Shooter.Servo.ShooterServoSubsystem;
-import org.firstinspires.ftc.teamcode.Shooter.ShooterByJoystickCommand;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterCommand;
 import org.firstinspires.ftc.teamcode.Shooter.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.pedro.Drawing;
-
-import java.util.Arrays;
 
 @TeleOp
 public class MainController extends CommandOpMode {
@@ -92,13 +88,6 @@ public class MainController extends CommandOpMode {
                 mechanismController.getButton(GamepadKeys.Button.B)
         ).whileActiveContinuous(new ShooterServoCommand(shooterServoSubsystem));
 
-        new Trigger(() ->
-                mechanismController.getButton(GamepadKeys.Button.Y)
-        ).whileActiveContinuous(new IntakeCommandReverse(intakeSubsystem, mechanismController));
-
-        if (mechanismController.getLeftX() > 0.010){
-            new ShooterByJoystickCommand(shooterSubsystem, mechanismController);
-        }
         //----------------------------/Shooter/----------------------
 
         new Trigger(() ->

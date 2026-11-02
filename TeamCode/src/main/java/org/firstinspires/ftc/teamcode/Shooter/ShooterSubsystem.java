@@ -12,13 +12,14 @@ public class ShooterSubsystem extends SubsystemBase {
     private final MotorEx shooterMotor;
     private final PIDFController pidController;
     private double targetVelocity = 0;
+    private GamepadEx controller;
 
     public ShooterSubsystem(HardwareMap hwMap) {
         shooterMotor = new MotorEx(hwMap, "ShooterMotor");
-        shooterMotor.setInverted(true);
+        shooterMotor.setInverted(false);
         shooterMotor.setRunMode(Motor.RunMode.RawPower);
 
-        pidController = new PIDFController(0.002, 0, 0, 0.0004);
+        pidController = new PIDFController(0.01, 0, 0, 0.004);
         pidController.setTolerance(30);
     }
 
@@ -28,10 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void start()   {
-        setTargetVelocity(620);
-    }
-    public void joystickPower(GamepadEx controller){
-        shooterMotor.set(controller.getLeftX());
+        setTargetVelocity(1000);
     }
     public void stop()    {
         setTargetVelocity(0);
